@@ -1,4 +1,6 @@
 class TasksController < ApplicationController
+  before_action :require_user_logged_in, only: [:index, :show, :new, :edit]
+  
   def index
     @tasks = Task.all
   end
@@ -12,13 +14,13 @@ class TasksController < ApplicationController
   end
   
   def create
-    @task = Task.new(task_params)
-    
+    # @task = Task.new(task_params)
+    @task = current_user.tasks.build(task_params)
     if @task.save
       flash[:success] = 'Taskが正常に送信されました'
       redirect_to @task
     else
-      flash.now[:danger] = 'Taksが送信されませんでした'
+      flash.now[:danger] = 'Taskが送信されませんでした'
       render :new
     end
   end
